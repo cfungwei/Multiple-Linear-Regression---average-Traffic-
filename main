@@ -1,0 +1,195 @@
+aadt = read.table("/aadt.txt", header = FALSE)
+#==== scatter plot ====#
+steam = data.frame(y=aadt$V1,x1=aadt$V2,x2=aadt$V3,x3=aadt$V4,x4=aadt$V5)
+plot(steam[,1:5])
+
+#==== MLR1 ====#
+#fit a multiple regression model
+mlr1 = lm(y~x1+x2+x3+x4,data=steam)
+summary(mlr1)
+qf(0.95,4,116)
+qt(0.975,116)
+
+#F-test for reduced model and full model
+mlr2= lm(y~x1+x2+x4,data=steam)
+anova(mlr2,mlr1)
+qf(0.95,1,116)
+
+#==== MLR2 ====#
+mlr2 = lm(y~x1+x2+x4,data=steam)
+summary(mlr2)
+qf(0.95,3,117)
+qt(0.975,117)
+
+#qqplot for MLR2
+qqnorm(residuals(mlr2),ylab="Residuals")
+qqline(residuals(mlr2))
+
+#Residuals plot for MLR2
+par(mfrow=c(2,2))
+
+plot(fitted(mlr2),residuals(mlr2),ylab="Residuals",xlab="Fitted values")
+panel.smooth(fitted(mlr2),residuals(mlr2))
+
+plot(steam$x1,residuals(mlr2),xlab="X1",ylab="Residuals")
+panel.smooth(steam$x1,residuals(mlr2))
+
+plot(steam$x2,residuals(mlr2),xlab="X2",ylab="Residuals")
+panel.smooth(steam$x2,residuals(mlr2))
+
+plot(steam$x4,residuals(mlr2),xlab="X4",ylab="Residuals")
+panel.smooth(steam$x4,residuals(mlr2))
+#x2 evidence of quadratic term
+
+#==== MLR3 ====#
+mlr3 = lm(y~x1+x2+x4+I(x2^2),data=steam)
+summary(mlr3)
+qf(0.95,4,116)
+qt(0.975,116)
+
+#QQplot for MLR3
+par(mfrow=c(1,1))
+qqnorm(residuals(mlr3),ylab="Residuals")
+qqline(residuals(mlr3))
+
+#Residuals plot for MLR3
+par(mfrow=c(2,2))
+
+plot(fitted(mlr3),residuals(mlr3),ylab="Residuals",xlab="Fitted values")
+panel.smooth(fitted(mlr3),residuals(mlr3))
+
+plot(steam$x1,residuals(mlr3),xlab="X1",ylab="Residuals")
+panel.smooth(steam$x1,residuals(mlr3))
+
+plot(steam$x2,residuals(mlr3),xlab="X2",ylab="Residuals")
+panel.smooth(steam$x2,residuals(mlr3))
+
+plot(steam$x4,residuals(mlr3),xlab="X4",ylab="Residuals")
+panel.smooth(steam$x4,residuals(mlr3))
+
+#==== MLR4 ====#
+mlr4 = lm(y ~ X1 + X2 +X4+I(X2^2) + I(X1*X2) + I(X1*X4), data = steam)
+summary(mlr4)
+qt(0.975,114)
+
+#QQ plot for MLR4
+qqnorm(residuals(mlr4),ylab = 'Residuals')
+qqline(residuals(mlr4))
+
+#Residual Plot for MLR4
+par(mfrow=c(2,2))
+
+plot(fitted(mlr4), residuals(mlr4), ylab = 'Residuals', xlab = '4.2 Fitted values')
+panel.smooth(fitted(mlr4), residuals(mlr4))
+
+plot(steam$X1, residuals(mlr4), ylab = 'Residuals', xlab = 'X1')
+panel.smooth(steam$X1, residuals(mlr4))
+
+plot(steam$X2, residuals(mlr4), ylab = 'Residuals', xlab = 'X2')
+panel.smooth(steam$X2, residuals(mlr4))
+
+plot(steam$X4, residuals(mlr4), ylab = 'Residuals', xlab = 'X4')
+panel.smooth(steam$X4, residuals(mlr4))
+par(mfrow=c(1,1))
+
+#F-test for reduced model and full model
+#Reduced model for X2
+mlr4_reduce_X2 = lm(y ~ X1 +X4+I(X2^2) + I(X1*X2) + I(X1*X4) + I(X2*X4), data = steam)
+anova(mlr4_reduce_X2,mlr4)
+
+#Reduced model for X4
+mlr4_reduce_X4 = lm(y ~ X1+X2+I(X2^2) + I(X1*X2) + I(X1*X4), data = steam)
+anova(mlr4_reduce_X4,mlr4)
+#p-value = 0.8368 > 0.05 cannot reject
+
+#Reduced model for X1*X2
+mlr4_reduce_X1X2 = lm(y ~ X1+X2+X4+ I(X2^2) + I(X1*X4) + I(X2*X4), data = steam)
+anova(mlr4_reduce_X1X2,mlr4)
+#p-value = 0.01095 > 0.01 cannot reject
+
+#Reduced model for X1*X4
+mlr4_reduce_X1X4 = lm(y ~ X1+X2+X4+ I(X2^2) + I(X1*X2) + I(X2*X4), data = steam)
+anova(mlr4_reduce_X1X4,mlr4)
+#p-value < 0.001, reject reduced model
+
+#Reduced model
+mlr5 = lm(y ~ X1 + I(X2^2) + I(X1*X4), data = steam)
+anova(mlr5,mlr4)
+#p-value = 0.02462 > 0.01 cannot reject, so we use the model mlr5
+
+#==== MLR 5 ====#
+mlr5 = lm(y ~ X1 + X2 + I(X2^2) + I(X1*X4), data = steam)
+summary(mlr5)
+qt(0.975,115)
+
+#QQ Plot for MLR 5
+qqnorm(residuals(mlr5),ylab = 'Residuals')
+qqline(residuals(mlr5))
+
+#Residual Plot for MLR 5
+plot(fitted(mlr5), residuals(mlr5), ylab = 'Residuals', xlab = 'Fitted values')
+panel.smooth(fitted(mlr5), residuals(mlr5))
+
+par(mfrow=c(2,2))
+
+plot(steam$X1, residuals(mlr5), ylab = 'Residuals', xlab = 'X1')
+panel.smooth(steam$X1, residuals(mlr5))
+
+plot((steam$X2)^2, residuals(mlr5), ylab = 'Residuals', xlab = 'X2')
+panel.smooth((steam$X2)^2, residuals(mlr5))
+
+plot(steam$X1 * steam$X2, residuals(mlr5), ylab = 'Residuals', xlab = 'X1X2')
+panel.smooth(steam$X1 * steam$X2, residuals(mlr5))
+
+plot(steam$X1 * steam$X4, residuals(mlr5), ylab = 'Residuals', xlab = 'X1X4')
+panel.smooth(steam$X1 * steam$X4, residuals(mlr5))
+
+par(mfrow=c(1,1))
+
+#==== MLR 6 ====#
+#Box-cox transformation
+library(MASS)
+box=boxcox(y ~ X1 + X2 + I(X1*X2) + I(X1*X4),data = steam)
+lambda<-box$x[which.max(box$y)]
+lambda
+
+#Summary for MLR 6
+mlr6 = lm(y^lambda ~ X1 + X2 + I(X1*X2) + I(X1*X4), data = steam)
+summary(mlr6)
+
+#F Test for reduced and full model
+mlr6 = lm(y^lambda ~ X1 + X2 + I(X2^2) + I(X1*X2) + I(X1*X4), data = steam)
+mlr7 = lm(y^lambda ~ X1 + X2 + I(X1*X2) + I(X1*X4), data = steam)
+anova(mlr7,mlr6)
+
+#==== MLR 7 ====#
+mlr7 = lm(y^lambda ~ X1 + X2 + I(X1*X2) + I(X1*X4), data = steam)
+summary(mlr7)
+
+#Residual and QQ Plot for MLR 7
+par(mfrow=c(2,3))
+
+qqnorm(residuals(mlr7),ylab = 'Residuals')
+qqline(residuals(mlr7))
+
+plot(fitted(mlr7), residuals(mlr7), ylab = 'Residuals', xlab = 'Fitted values')
+panel.smooth(fitted(mlr7), residuals(mlr7))
+
+plot(steam$X1, residuals(mlr7), ylab = 'Residuals', xlab = 'X1')
+panel.smooth(steam$X1, residuals(mlr7))
+
+plot(steam$X2, residuals(mlr7), ylab = 'Residuals', xlab = 'X2')
+panel.smooth(steam$X2, residuals(mlr7))
+
+plot(steam$X1 * steam$X2, residuals(mlr7), ylab = 'Residuals', xlab = 'X1X2')
+panel.smooth(steam$X1 * steam$X2, residuals(mlr7))
+
+plot(steam$X1 * steam$X4, residuals(mlr7), ylab = 'Residuals', xlab = 'X1X4')
+panel.smooth(steam$X1 * steam$X4, residuals(mlr7))
+
+par(mfrow=c(1,1))
+
+#Durbin-Watson Test for MLR 7
+library(lmtest)
+dwtest(y^lambda ~ X1 + X2 + I(X1*X2) + I(X1*X4), data = steam)
+#d = 1.7336
