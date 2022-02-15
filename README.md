@@ -35,4 +35,4 @@ Image above shows that the durbin-watson p-value is at 0.04912. We would be requ
 In conclusion, our final model fits the best compared to the previous models to predict the annual average daily traffic.
 
 *Done on Nov 2021
-Credits: Ang Kian Hao, Julianne Thatcher Low, Seng Swee Keng, Wisely Neo *
+Credits: Ang Kian Hao, Julianne Thatcher Low, Seng Swee Keng, Wisely Neo*
