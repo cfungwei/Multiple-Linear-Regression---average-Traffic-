@@ -8,7 +8,7 @@ The dataset presents us with 121 observations, 4 predictor variables and 1 respo
 4. X3 - Width of road section (ft)
 5. X4 - Two-category quality variable indicating whether or not there is control of access to road section
 
-Data had no missing values and target variables were already isolated. We proceed with a scatter plot matrix to identify a correlation between variables but the plot below seems to no have any observable pattern. *Looking back, using a scatter plot on classification data might not be as effective as using a boxplot on each level of the factor. This can help us visualize if there is a direct correlation between the levels and increasing aadt. An increase in the quartiles and median would convince me of an existing correlation*
+Data had no missing values and target variables were already isolated. We proceed with a scatter plot matrix to identify a correlation between variables but the plot below seems to no have any observable pattern. *Looking back, using a scatter plot on categorical data might not be as effective as using a boxplot on each level of the factor. This can help us visualize if there is a direct correlation between the levels and increasing aadt. An increase in the quartiles and median would convince me of an existing correlation*
 
 <img width="480" alt="Scatterplotmatrix" src="https://user-images.githubusercontent.com/97843966/154043849-64ba411c-baf3-4740-b7d6-881b872d868a.png">
 
